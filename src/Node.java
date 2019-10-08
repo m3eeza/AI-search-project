@@ -5,7 +5,7 @@ public class Node {
 
     private Object state;
     private Node parent;
-    private Object action;
+    private String action;
     private int pathCost;
 
     public Node(Object state) {
@@ -13,14 +13,14 @@ public class Node {
         this.pathCost = 0;
     }
 
-    public Node(Object state, Node parent, Object action, int stepCost) {
+    public Node(Object state, Node parent, String action, int stepCost) {
         this(state);
         this.parent = parent;
         this.action = action;
         this.pathCost = parent.pathCost + stepCost;
     }
 
-    public Object getState() {
+	public Object getState() {
         return state;
     }
 
@@ -64,6 +64,6 @@ public class Node {
             pathString += ("Action : " + nodes.get(i).getAction() + "\n");
             pathString += ("State  : " + nodes.get(i).getState()+ "\n");
         }
-        return pathString;
-    }
+		return pathString;
+	}
 }
