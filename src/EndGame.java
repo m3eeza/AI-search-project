@@ -150,7 +150,12 @@ public class EndGame implements SearchProblem {
 
 		if (action == "up" || action == "down" || action == "left" || action == "right") {
 			// Empty the current location.
+			if (grid[ironManLocation.x][ironManLocation.y] == '*') {
+				grid[ironManLocation.x][ironManLocation.y] = 'S';
+			} else {
 			grid[ironManLocation.x][ironManLocation.y] = 'E';
+			}
+
 			if (action == "up") {
 				newX--;
 			} else if (action == "down") {
