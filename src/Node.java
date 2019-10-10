@@ -53,7 +53,7 @@ public class Node {
     }
 
     public String toString() {
-        return "[parent=" + parent + ", action=" + action + ", state="
+        return "action=" + action + ", state="
                 + getState() + ", pathCost=" + pathCost + "]";
     }
 
@@ -62,7 +62,13 @@ public class Node {
         List<Node> nodes = getPathFromRoot();
         for (int i = 0; i < nodes.size(); i++) {
             pathString += ("Action : " + nodes.get(i).getAction() + "\n");
-            pathString += ("State  : " + nodes.get(i).getState()+ "\n");
+            State state = (State) (nodes.get(i).getState());
+            for (int ii = 0; ii < state.grid.length; ii++) {
+                for (int j = 0; j < state.grid.length; j++) {
+                    pathString += (state.grid[ii][j] + " ");
+                }
+                pathString += "\n";
+            }
         }
 		return pathString;
 	}
