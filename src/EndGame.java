@@ -81,6 +81,7 @@ public class EndGame implements SearchProblem {
 		byte numCollectedStones = getNumberOfCollectedStones(grid);
 		if (grid[ironManLocation.x][ironManLocation.y] == '*') {
 			actions.add("collect");
+			// return actions; // This is an extra optimization, do we need it ?
 		}
 		if (grid[ironManLocation.x][ironManLocation.y] == '+') {
 			actions.add("snap");
@@ -153,7 +154,7 @@ public class EndGame implements SearchProblem {
 			if (grid[ironManLocation.x][ironManLocation.y] == '*') {
 				grid[ironManLocation.x][ironManLocation.y] = 'S';
 			} else {
-			grid[ironManLocation.x][ironManLocation.y] = 'E';
+				grid[ironManLocation.x][ironManLocation.y] = 'E';
 			}
 
 			if (action == "up") {

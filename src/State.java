@@ -7,14 +7,17 @@ public class State {
 		this.damage = damage;
 	}
 
-	// public String toString() {
-	// String str = "";
-	// for (int i = 0; i < this.grid.length; i++) {
-	// for (int j = 0; j < this.grid.length; j++) {
-	// str += (this.grid[i][j] + " ");
-	// }
-	// str += "\n";
-	// }
-	// return str;
-	// }
+	public String getValue() {
+		// Use this to serializer the state (for handling repeated states)
+		String s = "";
+		for (byte i = 0; i < this.grid.length; i++) {
+			for (byte j = 0; j < this.grid.length; j++) {
+				s += grid[i][j];
+			}
+		}
+		s += ";";
+		s += damage;
+		return s;
+	}
+
 }

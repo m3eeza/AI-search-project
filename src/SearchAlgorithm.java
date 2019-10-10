@@ -1,37 +1,40 @@
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.Queue;
 
 public abstract class SearchAlgorithm {
-
+	HashSet<String> memo = new HashSet<String>();
 	Collection<Node> frontier;
+	int totalNodes = 0;
+
+	public int getNumberNodesExpanded() {
+		return totalNodes;
+	}
 
 	public Node solve(SearchProblem problem) {
-		System.out.println("Solving...");
 		frontier = initFrontier();
 		frontier.addAll(this.expand(new Node(problem.getInitialState()), problem));
-		System.out.println("Starting frontier is " + frontier);
 		boolean done = false;
 		Node solution = null;
 		while (!done) {
+			totalNodes++;
 			if (frontier.isEmpty()) {
-				System.out.println("No more nodes in frontier => FAILURE");
 				done = true;
 			} else {
 				Node node = chooseLeafNode(frontier, problem);
-				System.out.println("Inspecting node " + node);
+				if (totalNodes % 20000 == 0) {
+					// Just a debug to assure that the program has not crashed :D
+					System.out.print('.');
+				}
 				if (problem.isGoal(node.getState())) {
-					System.out.println("Goal node reached => SUCCESS");
 					solution = node;
 					done = true;
 				} else {
 					Collection<Node> possibleNodes = this.expand(node, problem);
-					// TODO:: Check repeated states??
 					frontier.addAll(possibleNodes);
-					// System.out.printf("Expanding node, frontier is " +
-					// frontier);
 				}
 			}
 		}
@@ -42,8 +45,13 @@ public abstract class SearchAlgorithm {
 		Collection<Node> nodes = new ArrayList<Node>();
 		Collection<String> actions = problem.getAllowedActions(node.getState());
 		for (String action : actions) {
-			Object next = problem.getNextState(node.getState(), action);
-			nodes.add(new Node(next, node, action, problem.getStepCost(node.getState(), action, next)));
+			Object nextState = problem.getNextState(node.getState(), action);
+			String value = ((State) (nextState)).getValue();
+			if (memo.contains(value)) {
+				continue;
+			}
+			memo.add(value);
+			nodes.add(new Node(nextState, node, action, problem.getStepCost(node.getState(), action, nextState)));
 		}
 		return nodes;
 	}
