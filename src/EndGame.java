@@ -60,7 +60,7 @@ public class EndGame implements SearchProblem {
 		// is not our goal
 		for (byte i = 0; i < grid.length; i++) {
 			for (byte j = 0; j < grid[i].length; j++) {
-				if (grid[i][j] == 'T' || grid[i][j] == 'S') {
+				if (grid[i][j] == 'T' || grid[i][j] == 'S' || grid[i][j] == '*' || grid[i][j] == '+') {
 					return false;
 				}
 			}
@@ -153,8 +153,11 @@ public class EndGame implements SearchProblem {
 			// Empty the current location.
 			if (grid[ironManLocation.x][ironManLocation.y] == '*') {
 				grid[ironManLocation.x][ironManLocation.y] = 'S';
+			} else if (grid[ironManLocation.x][ironManLocation.y] == '+'){
+				grid[ironManLocation.x][ironManLocation.y] = 'T';
 			} else {
 				grid[ironManLocation.x][ironManLocation.y] = 'E';
+
 			}
 
 			if (action == "up") {
