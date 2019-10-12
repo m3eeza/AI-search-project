@@ -38,35 +38,45 @@ public class Main {
 		EndGame e = new EndGame(new State(map, 0));
 		SearchAlgorithm algorithm = null;
 		switch (strategy) {
-		case "BFS":
+		case "BF":
 			algorithm = new BFS();
 			break;
-		case "DFS":
+		case "DF":
 			algorithm = new DFS();
+		case "UC":
+			algorithm = new UCS();
 		default:
 			break;
 		}
 		Node solution = algorithm.solve(e);
+		State solutionState = (State) (solution.getState());
 		if (visualize) {
 			System.out.println(solution.pathToString());
-			State state = (State) (solution.getState());
+			System.out.println();
 			System.out.println("=======FINAL MAP=======");
-			System.out.println("Took damage: " + state.damage);
-			for (int i = 0; i < state.grid.length; i++) {
-				for (int j = 0; j < state.grid.length; j++) {
-					System.out.print(state.grid[i][j] + " ");
+			System.out.println("Took damage: " + solutionState.damage);
+			for (int i = 0; i < solutionState.grid.length; i++) {
+				for (int j = 0; j < solutionState.grid.length; j++) {
+					System.out.print(solutionState.grid[i][j] + " ");
 				}
 				System.out.println("");
 			}
 			System.out.println("Total nodes: " + algorithm.getNumberNodesExpanded());
 		}
-		return "plan;cost;nodes";
+		return (solution.actionsToString() + ";" + solutionState.damage + ";" + algorithm.getNumberNodesExpanded());
 
 	}
 
 	public static void main(String[] args) {
 		String grid = "5,5;1,2;3,1;0,2,1,1,2,1,2,2,4,0,4,1;0,3,3,0,3,2,3,4,4,3";
-		solve(grid, "BFS", true);
+		
+		long startTime = System.nanoTime();
+		String solutionString = solve(grid, "UC", false);
+		long stopTime = System.nanoTime();
+		System.out.println();
+		System.out.println(solutionString);
+		
+		System.out.println("Time elapsed: " + (stopTime - startTime)/1e9f);
 	}
 
 }
