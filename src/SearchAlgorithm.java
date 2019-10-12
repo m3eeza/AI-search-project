@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Stack;
 import java.util.Queue;
 
@@ -81,5 +82,17 @@ class BFS extends SearchAlgorithm {
 	public Node chooseLeafNode(Collection<Node> frontier, SearchProblem problem) {
 		Queue<Node> queue = (Queue<Node>) (frontier);
 		return queue.poll();
+	}
+}
+
+class UCS extends SearchAlgorithm {
+	public Collection<Node> initFrontier() {
+		PriorityQueue<Node> pq = new PriorityQueue<Node>();
+		return pq;
+	}
+
+	public Node chooseLeafNode(Collection<Node> frontier, SearchProblem problem) {
+		PriorityQueue<Node> pq = (PriorityQueue<Node>) (frontier);
+		return pq.poll();
 	}
 }
