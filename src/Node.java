@@ -80,7 +80,7 @@ public class Node implements Comparable<Node> {
 				actionsString += (nodes.get(i).getAction() + ",");
 			}
 		}
-		actionsString = actionsString.substring(0,actionsString.length()-1);
+		actionsString = actionsString.substring(0, actionsString.length() - 1);
 		return actionsString;
 	}
 
