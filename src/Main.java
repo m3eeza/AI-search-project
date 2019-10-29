@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class Main {
@@ -47,6 +48,9 @@ public class Main {
 		case "UC":
 			algorithm = new UCS();
 			break;
+		case "ID":
+			algorithm = new IDS();
+			break;
 		default:
 			break;
 		}
@@ -93,4 +97,5 @@ public class Main {
 		System.out.println("Time elapsed: " + (stopTime - startTime)/1e9f);
 	}
 
+	
 }
