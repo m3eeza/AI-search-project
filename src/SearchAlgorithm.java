@@ -87,7 +87,7 @@ class BFS extends SearchAlgorithm {
 
 class UCS extends SearchAlgorithm {
 	public Collection<Node> initFrontier() {
-		PriorityQueue<Node> pq = new PriorityQueue<Node>();
+		PriorityQueue<Node> pq = new PriorityQueue<Node>(new DamageFunction());
 		return pq;
 	}
 
