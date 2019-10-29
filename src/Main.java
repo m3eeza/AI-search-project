@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class Main {
@@ -43,8 +44,13 @@ public class Main {
 			break;
 		case "DF":
 			algorithm = new DFS();
+			break;
 		case "UC":
 			algorithm = new UCS();
+			break;
+		case "ID":
+			algorithm = new IDS();
+			break;
 		default:
 			break;
 		}
@@ -69,14 +75,13 @@ public class Main {
 
 	public static void main(String[] args) {
 		String grid = "5,5;1,2;3,1;0,2,1,1,2,1,2,2,4,0,4,1;0,3,3,0,3,2,3,4,4,3";
-		
+		// String grid = "10,10;7,7;0,0;0,2,1,1,2,1,2,2,4,0,4,1;0,3,7,1,6,8,3,0,3,2,3,4,4,3";
 		long startTime = System.nanoTime();
-		String solutionString = solve(grid, "UC", false);
+		String solutionString = solve(grid, "DF", true);
 		long stopTime = System.nanoTime();
 		System.out.println();
 		System.out.println(solutionString);
-		
-		System.out.println("Time elapsed: " + (stopTime - startTime)/1e9f);
-	}
 
+		System.out.println("Time elapsed: " + (stopTime - startTime) / 1e9f);
+	}
 }

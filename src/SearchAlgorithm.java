@@ -6,7 +6,17 @@ import java.util.PriorityQueue;
 import java.util.Stack;
 import java.util.Queue;
 
-public abstract class SearchAlgorithm {
+public interface SearchAlgorithm {
+	public Node solve(SearchProblem problem);
+
+	public int getNumberNodesExpanded();
+
+}
+
+abstract class BaseSearch implements SearchAlgorithm {
+	/*
+	 * Used for simple searches (BFS, DFS and UCS)
+	 */
 	HashSet<String> memo = new HashSet<String>();
 	Collection<Node> frontier;
 	int totalNodes = 0;
@@ -62,7 +72,7 @@ public abstract class SearchAlgorithm {
 	public abstract Node chooseLeafNode(Collection<Node> frontier, SearchProblem problem);
 }
 
-class DFS extends SearchAlgorithm {
+class DFS extends BaseSearch {
 	public Collection<Node> initFrontier() {
 		return new Stack<Node>();
 	}
@@ -73,7 +83,7 @@ class DFS extends SearchAlgorithm {
 	}
 }
 
-class BFS extends SearchAlgorithm {
+class BFS extends BaseSearch {
 	public Collection<Node> initFrontier() {
 		Queue<Node> queue = new LinkedList<Node>();
 		return queue;
@@ -85,7 +95,7 @@ class BFS extends SearchAlgorithm {
 	}
 }
 
-class UCS extends SearchAlgorithm {
+class UCS extends BaseSearch {
 	public Collection<Node> initFrontier() {
 		PriorityQueue<Node> pq = new PriorityQueue<Node>();
 		return pq;
@@ -94,5 +104,57 @@ class UCS extends SearchAlgorithm {
 	public Node chooseLeafNode(Collection<Node> frontier, SearchProblem problem) {
 		PriorityQueue<Node> pq = (PriorityQueue<Node>) (frontier);
 		return pq.poll();
+	}
+}
+
+class DLS extends DFS {
+	int depth;
+
+	public DLS(int depth) {
+		this.depth = depth;
+	}
+
+	public Collection<Node> expand(Node node, SearchProblem problem) {
+		Collection<Node> nodes = new ArrayList<Node>();
+
+		int nodeDepth = node.getPathFromRoot().size();
+		if (nodeDepth >= depth) {
+			return nodes;
+		}
+
+		Collection<String> actions = problem.getAllowedActions(node.getState());
+		for (String action : actions) {
+			Object nextState = problem.getNextState(node.getState(), action);
+			String value = ((State) (nextState)).getValue();
+			if (memo.contains(value)) {
+				continue;
+			}
+			memo.add(value);
+			nodes.add(new Node(nextState, node, action, problem.getStepCost(node.getState(), action, nextState)));
+		}
+		return nodes;
+	}
+}
+
+class IDS implements SearchAlgorithm {
+
+	int depth = 0;
+	int totalNodes = 0;
+
+	public Node solve(SearchProblem problem) {
+		while (true) {
+			depth++;
+			System.out.println(depth);
+			DLS dls = new DLS(depth);
+			Node result = dls.solve(problem);
+			totalNodes += dls.getNumberNodesExpanded();
+			if (result != null) {
+				return result;
+			}
+		}
+	}
+
+	public int getNumberNodesExpanded() {
+		return totalNodes;
 	}
 }

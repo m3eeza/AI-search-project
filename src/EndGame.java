@@ -153,7 +153,7 @@ public class EndGame implements SearchProblem {
 			// Empty the current location.
 			if (grid[ironManLocation.x][ironManLocation.y] == '*') {
 				grid[ironManLocation.x][ironManLocation.y] = 'S';
-			} else if (grid[ironManLocation.x][ironManLocation.y] == '+'){
+			} else if (grid[ironManLocation.x][ironManLocation.y] == '+') {
 				grid[ironManLocation.x][ironManLocation.y] = 'T';
 			} else {
 				grid[ironManLocation.x][ironManLocation.y] = 'E';

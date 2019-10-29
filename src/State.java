@@ -19,5 +19,4 @@ public class State {
 		s += damage;
 		return s;
 	}
-
 }
