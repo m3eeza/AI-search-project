@@ -635,7 +635,6 @@ public class EndGameTests {
 		assertTrue("The output actions do not lead to a goal state.", applyPlan(grid15, solution));
 	}
 
-
 	private boolean applyPlan(String grid, String solution) {
 		char[][] g = convertToGrid(grid);
 		String plan = solution.split(";")[0];

@@ -26,7 +26,7 @@ abstract class BaseSearch implements SearchAlgorithm {
 	}
 
 	public Node solve(SearchProblem problem) {
-		frontier = initFrontier();
+		frontier = initFrontier(problem);
 		frontier.addAll(this.expand(new Node(problem.getInitialState()), problem));
 		boolean done = false;
 		Node solution = null;
@@ -67,13 +67,13 @@ abstract class BaseSearch implements SearchAlgorithm {
 		return nodes;
 	}
 
-	public abstract Collection<Node> initFrontier();
+	public abstract Collection<Node> initFrontier(SearchProblem problem);
 
 	public abstract Node chooseLeafNode(Collection<Node> frontier, SearchProblem problem);
 }
 
 class DFS extends BaseSearch {
-	public Collection<Node> initFrontier() {
+	public Collection<Node> initFrontier(SearchProblem problem) {
 		return new Stack<Node>();
 	}
 
@@ -84,7 +84,7 @@ class DFS extends BaseSearch {
 }
 
 class BFS extends BaseSearch {
-	public Collection<Node> initFrontier() {
+	public Collection<Node> initFrontier(SearchProblem problem) {
 		Queue<Node> queue = new LinkedList<Node>();
 		return queue;
 	}
@@ -96,8 +96,9 @@ class BFS extends BaseSearch {
 }
 
 class UCS extends BaseSearch {
-	public Collection<Node> initFrontier() {
-		PriorityQueue<Node> pq = new PriorityQueue<Node>();
+	public Collection<Node> initFrontier(SearchProblem problem) {
+		PriorityQueue<Node> pq = new PriorityQueue<Node>(new DamageFunction());
+
 		return pq;
 	}
 
@@ -144,7 +145,6 @@ class IDS implements SearchAlgorithm {
 	public Node solve(SearchProblem problem) {
 		while (true) {
 			depth++;
-			System.out.println(depth);
 			DLS dls = new DLS(depth);
 			Node result = dls.solve(problem);
 			totalNodes += dls.getNumberNodesExpanded();
@@ -158,3 +158,23 @@ class IDS implements SearchAlgorithm {
 		return totalNodes;
 	}
 }
+
+class BestFirstSearch extends BaseSearch {
+	EvaluationFunction evalFunc;
+
+	public BestFirstSearch(EvaluationFunction evalFunc) {
+		super();
+		this.evalFunc = evalFunc;
+	}
+
+	public Collection<Node> initFrontier(SearchProblem problem) {
+		PriorityQueue<Node> pq = new PriorityQueue<Node>(evalFunc);
+		return pq;
+	}
+
+	public Node chooseLeafNode(Collection<Node> frontier, SearchProblem problem) {
+		PriorityQueue<Node> pq = (PriorityQueue<Node>) (frontier);
+		return pq.poll();
+	}
+}
+

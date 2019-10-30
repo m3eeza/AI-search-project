@@ -15,8 +15,8 @@ public class State {
 				s += grid[i][j];
 			}
 		}
-		//s += ";";
-		//s += damage;
+		// s += ";";
+		// s += damage;
 		return s;
 	}
 

@@ -51,11 +51,23 @@ public class Main {
 		case "ID":
 			algorithm = new IDS();
 			break;
+		case "GR1":
+			algorithm = new BestFirstSearch(new H1((State) e.initialState));
+			break;
+		case "GR2":
+			// algorithm = new IDS();
+			return "";
+		case "AS1":
+			algorithm = new BestFirstSearch(new H1Damage((State) e.initialState));
+			break;
+		case "AS2":
+			// algorithm = new IDS();
+			return "";
 		default:
 			break;
 		}
 		Node solution = algorithm.solve(e);
-		if(solution == null) 
+		if (solution == null)
 			return "There is no solution";
 		State solutionState = (State) (solution.getState());
 		if (visualize) {
@@ -89,13 +101,19 @@ public class Main {
 		String grid14 = "14,14;2,13;12,7;8,6,9,4,7,1,4,4,4,7,2,3;8,13,0,4,0,8,5,7,10,0";
 		String grid15 = "15,15;12,13;5,7;7,0,9,14,14,8,5,8,8,9,8,4;6,6,4,3,10,2,7,4,3,11";
 		long startTime = System.nanoTime();
-		String solutionString = solve(grid15, "UC", false);
+		String solutionString = solve(grid, "UC", false);
 		long stopTime = System.nanoTime();
 		System.out.println();
 		System.out.println(solutionString);
-		
-		System.out.println("Time elapsed: " + (stopTime - startTime)/1e9f);
+
+		System.out.println("Time elapsed: " + (stopTime - startTime) / 1e9f);
+		startTime = System.nanoTime();
+		solutionString = solve(grid, "AS1", false);
+		stopTime = System.nanoTime();
+		System.out.println();
+		System.out.println(solutionString);
+
+		System.out.println("Time elapsed: " + (stopTime - startTime) / 1e9f);
 	}
 
-	
 }
