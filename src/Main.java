@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Main {
 
 	public static State getState(String grid) {
+		// Divide by two since each position has 2 components (x, y)
 		byte numStones = (byte) (grid.split(";")[3].split(",").length / 2);
 		byte numWarriors = (byte) (grid.split(";")[4].split(",").length / 2);
 		Scanner sc = new Scanner(grid);
@@ -22,17 +23,16 @@ public class Main {
 		byte[][] stonePositions = new byte[numStones][2];
 		byte[][] warriorPositions = new byte[numWarriors][2];
 
-		// Multiply by two, since each object has 2 components: x, y
-		for (byte i = 0; i < numStones; i += 2) {
-			stonePositions[i / 2][0] = (byte) sc.nextInt();
-			stonePositions[i / 2][1] = (byte) sc.nextInt();
+		for (byte i = 0; i < numStones; i++) {
+			stonePositions[i][0] = (byte) sc.nextInt();
+			stonePositions[i][1] = (byte) sc.nextInt();
 		}
-
-		for (byte i = 0; i < numWarriors; i += 2) {
-			warriorPositions[i / 2][0] = (byte) sc.nextInt();
-			warriorPositions[i / 2][1] = (byte) sc.nextInt();
+		for (byte i = 0; i < numWarriors; i++) {
+			warriorPositions[i][0] = (byte) sc.nextInt();
+			warriorPositions[i][1] = (byte) sc.nextInt();
 		}
 		sc.close();
+
 		return new State(m, n, ironManPosition, thanosPosition, stonePositions, warriorPositions, ((byte) 0));
 	}
 
