@@ -61,6 +61,7 @@ public class Node implements Comparable<Node> {
 		List<Node> nodes = getPathFromRoot();
 		for (int i = 0; i < nodes.size(); i++) {
 			pathString += ("Action : " + nodes.get(i).getAction() + "\n");
+			pathString += ("Damage : " + nodes.get(i).getPathCost() + "\n");
 			State state = (State) (nodes.get(i).getState());
 			for (int ii = 0; ii < state.grid.length; ii++) {
 				for (int j = 0; j < state.grid.length; j++) {

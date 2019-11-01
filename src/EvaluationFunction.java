@@ -4,8 +4,6 @@ public abstract class EvaluationFunction implements Comparator<Node> {
 
 	@Override
 	public abstract int compare(Node o1, Node o2);
-	
-	
 
 }
 
@@ -20,27 +18,19 @@ class DamageFunction extends EvaluationFunction {
 
 class H1 extends EvaluationFunction {
 
-	String heuristicGoal;
-
-	public H1(State initialState) {
-		String s = initialState.getValue();
-		heuristicGoal = s.replace('S', 'E');
-		heuristicGoal.replace('I', 'E');
-		heuristicGoal.replace('T', 'I');
-	}
-
 	@Override
 	public int compare(Node o1, Node o2) {
 
 		return distanceToGoal(o1.getState()) - distanceToGoal(o2.getState());
 	}
 
-	public short distanceToGoal(Object state) {
-		String s = ((State) state).getValue();
-		short distance = 0;
-		for (short i = 0; i < s.length(); i++) {
-			if (s.charAt(i) != heuristicGoal.charAt(i)) {
-				distance++;
+	public byte distanceToGoal(Object state) {
+		char[][] grid = ((State) state).grid;
+		byte distance = 0;
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid[i].length; j++) {
+				if (grid[i][j] == 'S')
+					++distance;
 			}
 		}
 		return distance;
@@ -48,30 +38,57 @@ class H1 extends EvaluationFunction {
 
 }
 
-class H1Damage extends EvaluationFunction {
+class H2 extends EvaluationFunction {
 
-	char[] heuristicGoal;
+	@Override
+	public int compare(Node o1, Node o2) {
 
-	public H1Damage(State initialState) {
-		String s = initialState.getValue();
-		heuristicGoal = s.replace('S', 'E').toCharArray();
+		return distanceToGoal(o1.getState()) - distanceToGoal(o2.getState());
+	}
+
+	public static boolean isValid(int x, int y, int m, int n) {
+		// m is number of rows (height)
+		// n is number of cols (width)
+		return (x >= 0 && x < m && y >= 0 && y < n);
+	}
+
+	public byte distanceToGoal(Object state) {
+		char[][] grid = ((State) state).grid;
+		int m = grid.length;
+		int n = grid[0].length;
+		byte distance = 0;
+		byte[][] directions = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+		for (byte i = 0; i < grid.length; i++) {
+			for (byte j = 0; j < grid[i].length; j++) {
+				if (grid[i][j] == 'S') {
+					for (byte k = 0; k < directions.length; k++) {
+						byte x = (byte) (i + directions[k][0]);
+						byte y = (byte) (j + directions[k][1]);
+						if (isValid(x, y, m, n) && grid[x][y] == 'W') {
+							distance++;
+						}
+					}
+				}
+			}
+		}
+		return distance;
+	}
+
+}
+
+class compoundEvalFunc extends EvaluationFunction {
+
+	EvaluationFunction e1, e2;
+
+	public compoundEvalFunc(EvaluationFunction e1, EvaluationFunction e2) {
+		this.e1 = e1;
+		this.e2 = e2;
 	}
 
 	@Override
 	public int compare(Node o1, Node o2) {
 
-		return distanceToGoal(o1.getState()) + o1.getPathCost() - distanceToGoal(o2.getState()) - o2.getPathCost();
-	}
-
-	public short distanceToGoal(Object state) {
-		char[] s = ((State) state).getValue().toCharArray();
-		short distance = 0;
-		for (short i = 0; i < s.length; i++) {
-			if (s[i] != heuristicGoal[i]) {
-				distance++;
-			}
-		}
-		return distance;
+		return e1.compare(o1, o2) + e2.compare(o1, o2);
 	}
 
 }

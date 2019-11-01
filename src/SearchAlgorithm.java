@@ -95,19 +95,6 @@ class BFS extends BaseSearch {
 	}
 }
 
-class UCS extends BaseSearch {
-	public Collection<Node> initFrontier(SearchProblem problem) {
-		PriorityQueue<Node> pq = new PriorityQueue<Node>(new DamageFunction());
-
-		return pq;
-	}
-
-	public Node chooseLeafNode(Collection<Node> frontier, SearchProblem problem) {
-		PriorityQueue<Node> pq = (PriorityQueue<Node>) (frontier);
-		return pq.poll();
-	}
-}
-
 class DLS extends DFS {
 	int depth;
 
@@ -116,24 +103,31 @@ class DLS extends DFS {
 	}
 
 	public Collection<Node> expand(Node node, SearchProblem problem) {
-		Collection<Node> nodes = new ArrayList<Node>();
 
 		int nodeDepth = node.getPathFromRoot().size();
 		if (nodeDepth >= depth) {
-			return nodes;
+			return new ArrayList<Node>();
 		}
+		return super.expand(node, problem);
+	}
+}
 
-		Collection<String> actions = problem.getAllowedActions(node.getState());
-		for (String action : actions) {
-			Object nextState = problem.getNextState(node.getState(), action);
-			String value = ((State) (nextState)).getValue();
-			if (memo.contains(value)) {
-				continue;
-			}
-			memo.add(value);
-			nodes.add(new Node(nextState, node, action, problem.getStepCost(node.getState(), action, nextState)));
-		}
-		return nodes;
+class BestFirstSearch extends BaseSearch {
+	EvaluationFunction evalFunc;
+
+	public BestFirstSearch(EvaluationFunction evalFunc) {
+		super();
+		this.evalFunc = evalFunc;
+	}
+
+	public Collection<Node> initFrontier(SearchProblem problem) {
+		PriorityQueue<Node> pq = new PriorityQueue<Node>(evalFunc);
+		return pq;
+	}
+
+	public Node chooseLeafNode(Collection<Node> frontier, SearchProblem problem) {
+		PriorityQueue<Node> pq = (PriorityQueue<Node>) (frontier);
+		return pq.poll();
 	}
 }
 
@@ -158,23 +152,3 @@ class IDS implements SearchAlgorithm {
 		return totalNodes;
 	}
 }
-
-class BestFirstSearch extends BaseSearch {
-	EvaluationFunction evalFunc;
-
-	public BestFirstSearch(EvaluationFunction evalFunc) {
-		super();
-		this.evalFunc = evalFunc;
-	}
-
-	public Collection<Node> initFrontier(SearchProblem problem) {
-		PriorityQueue<Node> pq = new PriorityQueue<Node>(evalFunc);
-		return pq;
-	}
-
-	public Node chooseLeafNode(Collection<Node> frontier, SearchProblem problem) {
-		PriorityQueue<Node> pq = (PriorityQueue<Node>) (frontier);
-		return pq.poll();
-	}
-}
-

@@ -46,23 +46,24 @@ public class Main {
 			algorithm = new DFS();
 			break;
 		case "UC":
-			algorithm = new UCS();
+			// algorithm = new UCS();
+			algorithm = new BestFirstSearch(new DamageFunction());
 			break;
 		case "ID":
 			algorithm = new IDS();
 			break;
 		case "GR1":
-			algorithm = new BestFirstSearch(new H1((State) e.initialState));
+			algorithm = new BestFirstSearch(new H1());
 			break;
 		case "GR2":
-			// algorithm = new IDS();
-			return "";
+			algorithm = new BestFirstSearch(new H2());
+			break;
 		case "AS1":
-			algorithm = new BestFirstSearch(new H1Damage((State) e.initialState));
+			algorithm = new BestFirstSearch(new compoundEvalFunc(new H1(), new DamageFunction()));
 			break;
 		case "AS2":
-			// algorithm = new IDS();
-			return "";
+			algorithm = new BestFirstSearch(new compoundEvalFunc(new H2(), new DamageFunction()));
+			break;
 		default:
 			break;
 		}
@@ -101,14 +102,14 @@ public class Main {
 		String grid14 = "14,14;2,13;12,7;8,6,9,4,7,1,4,4,4,7,2,3;8,13,0,4,0,8,5,7,10,0";
 		String grid15 = "15,15;12,13;5,7;7,0,9,14,14,8,5,8,8,9,8,4;6,6,4,3,10,2,7,4,3,11";
 		long startTime = System.nanoTime();
-		String solutionString = solve(grid, "UC", false);
+		String solutionString = solve(grid5, "UC", !true);
 		long stopTime = System.nanoTime();
 		System.out.println();
 		System.out.println(solutionString);
 
 		System.out.println("Time elapsed: " + (stopTime - startTime) / 1e9f);
 		startTime = System.nanoTime();
-		solutionString = solve(grid, "AS1", false);
+		solutionString = solve(grid5, "AS1", !true);
 		stopTime = System.nanoTime();
 		System.out.println();
 		System.out.println(solutionString);
