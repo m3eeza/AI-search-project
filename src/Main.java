@@ -102,14 +102,14 @@ public class Main {
 		String grid14 = "14,14;2,13;12,7;8,6,9,4,7,1,4,4,4,7,2,3;8,13,0,4,0,8,5,7,10,0";
 		String grid15 = "15,15;12,13;5,7;7,0,9,14,14,8,5,8,8,9,8,4;6,6,4,3,10,2,7,4,3,11";
 		long startTime = System.nanoTime();
-		String solutionString = solve(grid5, "UC", !true);
+		String solutionString = solve(grid10, "UC", !true);
 		long stopTime = System.nanoTime();
 		System.out.println();
 		System.out.println(solutionString);
 
 		System.out.println("Time elapsed: " + (stopTime - startTime) / 1e9f);
 		startTime = System.nanoTime();
-		solutionString = solve(grid5, "AS1", !true);
+		solutionString = solve(grid10, "AS1", !true);
 		stopTime = System.nanoTime();
 		System.out.println();
 		System.out.println(solutionString);

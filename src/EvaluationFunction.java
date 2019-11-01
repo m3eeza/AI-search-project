@@ -30,7 +30,7 @@ class H1 extends EvaluationFunction {
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid[i].length; j++) {
 				if (grid[i][j] == 'S')
-					++distance;
+					distance+=3;
 			}
 		}
 		return distance;
@@ -61,6 +61,7 @@ class H2 extends EvaluationFunction {
 		for (byte i = 0; i < grid.length; i++) {
 			for (byte j = 0; j < grid[i].length; j++) {
 				if (grid[i][j] == 'S') {
+					distance+=3;
 					for (byte k = 0; k < directions.length; k++) {
 						byte x = (byte) (i + directions[k][0]);
 						byte y = (byte) (j + directions[k][1]);
