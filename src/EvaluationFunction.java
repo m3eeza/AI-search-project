@@ -17,6 +17,8 @@ class DamageFunction extends EvaluationFunction {
 }
 
 class H1 extends EvaluationFunction {
+	// The heuristic only considers the number of damage inflected by
+	// the available stones, which is inevitable to be collected.
 
 	@Override
 	public int compare(Node o1, Node o2) {
@@ -25,50 +27,33 @@ class H1 extends EvaluationFunction {
 	}
 
 	public byte distanceToGoal(Object state) {
-		char[][] grid = ((State) state).grid;
-		byte distance = 0;
-		for (int i = 0; i < grid.length; i++) {
-			for (int j = 0; j < grid[i].length; j++) {
-				if (grid[i][j] == 'S')
-					distance+=3;
-			}
-		}
-		return distance;
+		return (byte) (((State) state).stonePositions.length * 3);
 	}
 
 }
 
 class H2 extends EvaluationFunction {
-
+	// Heuristic that looks at the damage inflected by the remaining
+	// stones, while also considering any surrounding warriors
+	// to the stone (which the agent will have to face)
 	@Override
 	public int compare(Node o1, Node o2) {
-
 		return distanceToGoal(o1.getState()) - distanceToGoal(o2.getState());
 	}
 
-	public static boolean isValid(int x, int y, int m, int n) {
-		// m is number of rows (height)
-		// n is number of cols (width)
-		return (x >= 0 && x < m && y >= 0 && y < n);
-	}
-
-	public byte distanceToGoal(Object state) {
-		char[][] grid = ((State) state).grid;
-		int m = grid.length;
-		int n = grid[0].length;
+	public byte distanceToGoal(Object s) {
+		State state = (State) s;
 		byte distance = 0;
 		byte[][] directions = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
-		for (byte i = 0; i < grid.length; i++) {
-			for (byte j = 0; j < grid[i].length; j++) {
-				if (grid[i][j] == 'S') {
-					distance+=3;
-					for (byte k = 0; k < directions.length; k++) {
-						byte x = (byte) (i + directions[k][0]);
-						byte y = (byte) (j + directions[k][1]);
-						if (isValid(x, y, m, n) && grid[x][y] == 'W') {
-							distance++;
-						}
-					}
+		for (byte[] stonePos : state.stonePositions) {
+			distance += 3;
+			byte[] newPos = stonePos.clone();
+			for (byte[] pos : directions) {
+				newPos[0] += pos[0];
+				newPos[1] += pos[1];
+				if (Utils.positionExistsIn(state.warriorPositions, newPos) != -1) {
+					// It means that there exists a warrior around the stone in that cell
+					distance++;
 				}
 			}
 		}
@@ -88,7 +73,6 @@ class compoundEvalFunc extends EvaluationFunction {
 
 	@Override
 	public int compare(Node o1, Node o2) {
-
 		return e1.compare(o1, o2) + e2.compare(o1, o2);
 	}
 

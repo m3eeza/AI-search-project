@@ -47,7 +47,7 @@ public class Node implements Comparable<Node> {
 			path.add(0, current);
 			current = current.getParent();
 		}
-		// ensure the root node is added
+		// Ensure the root node is added
 		path.add(0, current);
 		return path;
 	}
@@ -56,16 +56,43 @@ public class Node implements Comparable<Node> {
 		return "action=" + action + ", state=" + getState() + ", pathCost=" + pathCost + "]";
 	}
 
-	public String pathToString() {
+	public String visualizePath() {
+		// Returns a string, visualizing the grid through each step
+		// Shitty code incoming ..
 		String pathString = "";
 		List<Node> nodes = getPathFromRoot();
-		for (int i = 0; i < nodes.size(); i++) {
-			pathString += ("Action : " + nodes.get(i).getAction() + "\n");
-			pathString += ("Damage : " + nodes.get(i).getPathCost() + "\n");
-			State state = (State) (nodes.get(i).getState());
-			for (int ii = 0; ii < state.grid.length; ii++) {
-				for (int j = 0; j < state.grid.length; j++) {
-					pathString += (state.grid[ii][j] + " ");
+		for (Node node : nodes) {
+			pathString += ("Action : " + node.getAction() + "\n");
+			pathString += ("Damage : " + node.getPathCost() + "\n");
+			State state = (State) (node.getState());
+			for (byte i = 0; i < state.m; i++) {
+				for (byte j = 0; j < state.n; j++) {
+					byte[] pos = { i, j };
+					char output = 'E';
+					boolean isStone = Utils.positionExistsIn(state.stonePositions, pos) != -1;
+					boolean isWarrior = Utils.positionExistsIn(state.warriorPositions, pos) != -1;
+					if (isStone) {
+						output = 'S';
+					} else if (isWarrior) {
+						output = 'W';
+					} else if (Utils.isSamePosition(state.thanosPosition, pos)) {
+						output = 'T';
+					}
+
+					if (Utils.isSamePosition(state.ironManPosition, pos)) {
+						if (output == 'E') {
+							output = 'I';
+						} else if (output == 'S') {
+							output = '*';
+						} else if (output == 'T') {
+							if (!state.isThanosKilled) {
+								output = '+';
+							} else {
+								output = 'I';
+							}
+						}
+					}
+					pathString += (output + " ");
 				}
 				pathString += "\n";
 			}

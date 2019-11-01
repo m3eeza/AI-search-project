@@ -7,6 +7,8 @@ import java.util.Stack;
 import java.util.Queue;
 
 public interface SearchAlgorithm {
+	boolean DEBUG = false;
+
 	public Node solve(SearchProblem problem);
 
 	public int getNumberNodesExpanded();
@@ -37,8 +39,10 @@ abstract class BaseSearch implements SearchAlgorithm {
 			} else {
 				Node node = chooseLeafNode(frontier, problem);
 				if (totalNodes % 20000 == 0) {
-					// Just a debug to assure that the program has not crashed :D
-					System.out.print('.');
+					if (this.DEBUG) {
+						// Just a debug to assure that the program has not crashed :D
+						System.out.print('.');
+					}
 				}
 				if (problem.isGoal(node.getState())) {
 					solution = node;
@@ -57,7 +61,7 @@ abstract class BaseSearch implements SearchAlgorithm {
 		Collection<String> actions = problem.getAllowedActions(node.getState());
 		for (String action : actions) {
 			Object nextState = problem.getNextState(node.getState(), action);
-			String value = ((State) (nextState)).getValue();
+			String value = ((State) (nextState)).serialize();
 			if (memo.contains(value)) {
 				continue;
 			}
