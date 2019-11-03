@@ -33,7 +33,7 @@ class H1 extends EvaluationFunction {
 }
 
 class H2 extends EvaluationFunction {
-	// Heuristic that looks at the damage inflected by the remaining
+	// Heuristic that looks at the damage inflicted by the remaining
 	// stones, while also considering any surrounding warriors
 	// to the stone (which the agent will have to face)
 	@Override
@@ -44,11 +44,10 @@ class H2 extends EvaluationFunction {
 	public byte distanceToGoal(Object s) {
 		State state = (State) s;
 		byte distance = 0;
-		byte[][] directions = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
 		for (byte[] stonePos : state.stonePositions) {
 			distance += 3;
 			byte[] newPos = stonePos.clone();
-			for (byte[] pos : directions) {
+			for (byte[] pos : Utils.directions.values()) {
 				newPos[0] += pos[0];
 				newPos[1] += pos[1];
 				if (Utils.positionExistsIn(state.warriorPositions, newPos) != -1) {

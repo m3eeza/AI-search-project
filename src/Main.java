@@ -84,9 +84,10 @@ public class Main {
 	public static void main(String[] args) {
 		String grid5 = "5,5;2,2;4,2;4,0,1,2,3,0,2,1,4,1,2,4;3,2,0,0,3,4,4,3,4,4";
 		String grid15 = "15,15;12,13;5,7;7,0,9,14,14,8,5,8,8,9,8,4;6,6,4,3,10,2,7,4,3,11";
+		String grid14 = "14,14;2,13;12,7;8,6,9,4,7,1,4,4,4,7,2,3;8,13,0,4,0,8,5,7,10,0";
 
 		long startTime = System.nanoTime();
-		String solutionString = solve(grid15, "BF", true);
+		String solutionString = solve(grid14, "DF", true);
 		long stopTime = System.nanoTime();
 		System.out.println(solutionString);
 		System.out.println("Time elapsed: " + (stopTime - startTime) / 1e9f);

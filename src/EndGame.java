@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 public class EndGame implements SearchProblem {
 	Object initialState;
@@ -10,11 +11,6 @@ public class EndGame implements SearchProblem {
 
 	public Object getInitialState() {
 		return this.initialState;
-	}
-
-	public static boolean isValid(byte[] pos, byte m, byte n) {
-		// m >> rows (height); n >> cols (width)
-		return (pos[0] >= 0 && pos[0] < m && pos[1] >= 0 && pos[1] < n);
 	}
 
 	public boolean isGoal(Object s) {
@@ -47,50 +43,18 @@ public class EndGame implements SearchProblem {
 			actions.add("snap");
 		}
 
-		byte[] currPos = { (byte) (state.ironManPosition[0] - 1), state.ironManPosition[1] };
-		if (isValid(currPos, state.m, state.n)) {
-			if (Utils.positionExistsIn(state.warriorPositions, currPos) != -1) {
-				if (!actions.contains("kill")) {
-					actions.add("kill");
+		byte[] currPos = { -1, -1 };
+		for (Map.Entry<String, byte[]> d : Utils.directions.entrySet()) {
+			currPos[0] = (byte) (state.ironManPosition[0] + d.getValue()[0]);
+			currPos[1] = (byte) (state.ironManPosition[1] + d.getValue()[1]);
+			if (Utils.isValid(currPos, state.m, state.n)) {
+				if (Utils.positionExistsIn(state.warriorPositions, currPos) != -1) {
+					if (!actions.contains("kill")) {
+						actions.add("kill");
+					}
+				} else if ((!Utils.isSamePosition(state.thanosPosition, currPos)) || numCollectedStones == 6) {
+					actions.add(d.getKey());
 				}
-			} else if ((!Utils.isSamePosition(state.thanosPosition, currPos)) || numCollectedStones == 6) {
-				actions.add("up");
-			}
-		}
-
-		currPos[0] = (byte) (state.ironManPosition[0] + 1);
-		currPos[1] = state.ironManPosition[1];
-		if (isValid(currPos, state.m, state.n)) {
-			if (Utils.positionExistsIn(state.warriorPositions, currPos) != -1) {
-				if (!actions.contains("kill")) {
-					actions.add("kill");
-				}
-			} else if ((!Utils.isSamePosition(state.thanosPosition, currPos)) || numCollectedStones == 6) {
-				actions.add("down");
-			}
-		}
-
-		currPos[0] = state.ironManPosition[0];
-		currPos[1] = (byte) (state.ironManPosition[1] - 1);
-		if (isValid(currPos, state.m, state.n)) {
-			if (Utils.positionExistsIn(state.warriorPositions, currPos) != -1) {
-				if (!actions.contains("kill")) {
-					actions.add("kill");
-				}
-			} else if ((!Utils.isSamePosition(state.thanosPosition, currPos)) || numCollectedStones == 6) {
-				actions.add("left");
-			}
-		}
-
-		currPos[0] = state.ironManPosition[0];
-		currPos[1] = (byte) (state.ironManPosition[1] + 1);
-		if (isValid(currPos, state.m, state.n)) {
-			if (Utils.positionExistsIn(state.warriorPositions, currPos) != -1) {
-				if (!actions.contains("kill")) {
-					actions.add("kill");
-				}
-			} else if ((!Utils.isSamePosition(state.thanosPosition, currPos)) || numCollectedStones == 6) {
-				actions.add("right");
 			}
 		}
 
@@ -114,7 +78,7 @@ public class EndGame implements SearchProblem {
 		byte newY = state.ironManPosition[1];
 		byte extraDamage = 0;
 
-		byte[] currPos = { 0, 0 };
+		byte[] currPos = { -1, -1 };
 		if (action == "up" || action == "down" || action == "left" || action == "right") {
 
 			if (action == "up") {
@@ -142,45 +106,19 @@ public class EndGame implements SearchProblem {
 				}
 				extraDamage += 3;
 			} else if (action == "kill") {
-				currPos[0] = (byte) (newX - 1);
-				currPos[1] = newY;
-				if (isValid(currPos, m, n)) {
-					byte warriorPos = Utils.positionExistsIn(state.warriorPositions, currPos);
-					if (warriorPos != -1) {
-						extraDamage += 2;
-						newWarriorsPositions[warriorPos] = null;
+
+				for (byte[] d : Utils.directions.values()) {
+					currPos[0] = (byte) (newX + d[0]);
+					currPos[1] = (byte) (newY + d[1]);
+					if (Utils.isValid(currPos, m, n)) {
+						byte warriorPos = Utils.positionExistsIn(state.warriorPositions, currPos);
+						if (warriorPos != -1) {
+							extraDamage += 2;
+							newWarriorsPositions[warriorPos] = null;
+						}
 					}
 				}
 
-				currPos[0] = (byte) (newX + 1);
-				currPos[1] = newY;
-				if (isValid(currPos, m, n)) {
-					byte warriorPos = Utils.positionExistsIn(state.warriorPositions, currPos);
-					if (warriorPos != -1) {
-						extraDamage += 2;
-						newWarriorsPositions[warriorPos] = null;
-					}
-				}
-
-				currPos[0] = newX;
-				currPos[1] = (byte) (newY - 1);
-				if (isValid(currPos, m, n)) {
-					byte warriorPos = Utils.positionExistsIn(state.warriorPositions, currPos);
-					if (warriorPos != -1) {
-						extraDamage += 2;
-						newWarriorsPositions[warriorPos] = null;
-					}
-				}
-
-				currPos[0] = newX;
-				currPos[1] = (byte) (newY + 1);
-				if (isValid(currPos, m, n)) {
-					byte warriorPos = Utils.positionExistsIn(state.warriorPositions, currPos);
-					if (warriorPos != -1) {
-						extraDamage += 2;
-						newWarriorsPositions[warriorPos] = null;
-					}
-				}
 			} else if (action == "snap") {
 				newIsThanosKilled = true;
 			}
@@ -196,48 +134,21 @@ public class EndGame implements SearchProblem {
 
 	private byte getTurnDamage(byte m, byte n, byte xPos, byte yPos, byte[][] warriorPositions, byte[] thanosPosition) {
 		// Update the damage
-		// For each adjacent warrior, inflect 1 damage
-		// For adjacent Thanos, inflect an extra 5 damage
+		// check all adjacent cells
+		// For each adjacent warrior, inflict 1 damage
+		// For adjacent Thanos, inflict an extra 5 damage
 
 		byte damage = 0;
-		byte[] currPos = { 0, 0 };
-		currPos[0] = (byte) (xPos - 1);
-		currPos[1] = yPos;
-		if (isValid(currPos, m, n)) {
-			if (Utils.positionExistsIn(warriorPositions, currPos) != -1) {
-				damage++;
-			} else if (Utils.isSamePosition(thanosPosition, currPos)) {
-				damage += 5;
-			}
-		}
-
-		currPos[0] = (byte) (xPos + 1);
-		currPos[1] = yPos;
-		if (isValid(currPos, m, n)) {
-			if (Utils.positionExistsIn(warriorPositions, currPos) != -1) {
-				damage++;
-			} else if (Utils.isSamePosition(thanosPosition, currPos)) {
-				damage += 5;
-			}
-		}
-
-		currPos[0] = xPos;
-		currPos[1] = (byte) (yPos - 1);
-		if (isValid(currPos, m, n)) {
-			if (Utils.positionExistsIn(warriorPositions, currPos) != -1) {
-				damage++;
-			} else if (Utils.isSamePosition(thanosPosition, currPos)) {
-				damage += 5;
-			}
-		}
-
-		currPos[0] = xPos;
-		currPos[1] = (byte) (yPos + 1);
-		if (isValid(currPos, m, n)) {
-			if (Utils.positionExistsIn(warriorPositions, currPos) != -1) {
-				damage++;
-			} else if (Utils.isSamePosition(thanosPosition, currPos)) {
-				damage += 5;
+		byte[] currPos = { -1, -1 };
+		for (byte[] d : Utils.directions.values()) {
+			currPos[0] = (byte) (xPos + d[0]);
+			currPos[1] = (byte) (yPos + d[1]);
+			if (Utils.isValid(currPos, m, n)) {
+				if (Utils.positionExistsIn(warriorPositions, currPos) != -1) {
+					damage++;
+				} else if (Utils.isSamePosition(thanosPosition, currPos)) {
+					damage += 5;
+				}
 			}
 		}
 
