@@ -1,10 +1,8 @@
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Scanner;
 
 public class Main {
 
-	public static State getState(String grid) {
+	public static State getStateFromGrid(String grid) {
 		// Divide by two since each position has 2 components (x, y)
 		byte numStones = (byte) (grid.split(";")[3].split(",").length / 2);
 		byte numWarriors = (byte) (grid.split(";")[4].split(",").length / 2);
@@ -37,7 +35,7 @@ public class Main {
 	}
 
 	public static String solve(String grid, String strategy, boolean visualize) {
-		EndGame e = new EndGame(getState(grid));
+		EndGame e = new EndGame(getStateFromGrid(grid));
 		SearchAlgorithm algorithm = null;
 		switch (strategy) {
 		case "BF":
